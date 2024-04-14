@@ -13,12 +13,13 @@ import {
   Response,
   UseGuards,
 } from '@nestjs/common';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { UsersService } from '@/users/users.service';
 import { RegisterUserDto } from '@/users/dto/register-user.dto';
 import { IUser } from '@/users/user.interface';
 import { Response as TResponse, Request as TRequest } from 'express';
+import { COOKIE_KEYS } from '@/constant/constant';
 
 @Controller('auth')
 export class AuthController {
@@ -59,7 +60,7 @@ export class AuthController {
     @Req() req: TRequest,
     @Response({ passthrough: true }) res: TResponse,
   ) {
-    const refreshToken = req.cookies['resfresh_token'];
+    const refreshToken = req.cookies[COOKIE_KEYS.REFRESH_TOKEN];
     if (!refreshToken) throw new BadRequestException('Invalid refresh token');
 
     return this.authService.handleRefreshToken(refreshToken, res);

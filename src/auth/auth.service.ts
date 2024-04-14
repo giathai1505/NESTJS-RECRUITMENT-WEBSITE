@@ -1,3 +1,4 @@
+import { COOKIE_KEYS, ENV_KEYS } from '@/constant/constant';
 import { IUser } from '@/users/user.interface';
 import { UsersService } from '@/users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
@@ -38,9 +39,11 @@ export class AuthService {
 
     this.usersService.updateUserRefreshToken(refreshToken, _id);
 
-    res.cookie('resfresh_token', refreshToken, {
+    res.cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
       httpOnly: true,
-      maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRED_IN')),
+      maxAge: ms(
+        this.configService.get<string>(ENV_KEYS.JWT_REFRESH_EXPIRED_IN),
+      ),
     });
 
     return {
@@ -56,8 +59,8 @@ export class AuthService {
 
   createRefreshToken = (payload: any): string => {
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRED_IN'),
+      secret: this.configService.get<string>(ENV_KEYS.JWT_ACCESS_SECRET),
+      expiresIn: this.configService.get<string>(ENV_KEYS.JWT_ACCESS_EXPIRED_IN),
     });
 
     return refreshToken;
@@ -66,7 +69,7 @@ export class AuthService {
   handleRefreshToken = async (refreshToken: string, res: Response) => {
     try {
       this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+        secret: this.configService.get<string>(ENV_KEYS.JWT_ACCESS_SECRET),
       });
       const user = await this.usersService.findUserByRefreshToken(refreshToken);
       if (user) {
@@ -85,10 +88,12 @@ export class AuthService {
 
         this.usersService.updateUserRefreshToken(refreshToken, _id.toString());
 
-        res.clearCookie('resfresh_token');
-        res.cookie('resfresh_token', refreshToken, {
+        res.clearCookie(COOKIE_KEYS.REFRESH_TOKEN);
+        res.cookie(COOKIE_KEYS.REFRESH_TOKEN, refreshToken, {
           httpOnly: true,
-          maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRED_IN')),
+          maxAge: ms(
+            this.configService.get<string>(ENV_KEYS.JWT_REFRESH_EXPIRED_IN),
+          ),
         });
 
         return {
@@ -110,7 +115,7 @@ export class AuthService {
 
   handleLogout = async (res: Response, user: IUser) => {
     await this.usersService.clearRefreshToken(user._id);
-    res.clearCookie('resfresh_token');
+    res.clearCookie(COOKIE_KEYS.REFRESH_TOKEN);
     return 'ok';
   };
 }

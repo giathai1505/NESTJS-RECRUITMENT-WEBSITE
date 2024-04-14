@@ -1,2 +1,13 @@
 export const IS_PUBLIC_KEY = 'isPublic';
 export const RESPONSE_MESSAGE = 'response_message';
+
+export const COOKIE_KEYS = {
+  REFRESH_TOKEN: 'refresh_token',
+};
+
+export const ENV_KEYS = {
+  JWT_ACCESS_SECRET: 'JWT_ACCESS_SECRET',
+  JWT_ACCESS_EXPIRED_IN: 'JWT_ACCESS_EXPIRED_IN',
+  JWT_REFRESH_SECRET: 'JWT_REFRESH_SECRET',
+  JWT_REFRESH_EXPIRED_IN: 'JWT_REFRESH_EXPIRED_IN',
+};

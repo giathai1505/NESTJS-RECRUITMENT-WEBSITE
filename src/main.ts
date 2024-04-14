@@ -9,7 +9,7 @@ import MongoStore from 'connect-mongo';
 import ms from 'ms';
 import passport from 'passport';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
 
 async function bootstrap() {
