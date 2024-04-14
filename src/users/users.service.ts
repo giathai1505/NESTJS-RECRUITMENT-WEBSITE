@@ -124,6 +124,10 @@ export class UsersService {
     );
   }
 
+  updateUserRefreshToken = async (refreshToken: string, _id: string) => {
+    return await this.userModel.updateOne({ _id }, { refreshToken });
+  };
+
   checkPassword(hash: string, plain: string) {
     return compareSync(hash, plain);
   }
@@ -140,5 +144,13 @@ export class UsersService {
     const salt = genSaltSync(10);
     const hash = hashSync(password, salt);
     return hash;
+  };
+
+  findUserByRefreshToken = async (refreshToken: string) => {
+    return await this.userModel.findOne({ refreshToken });
+  };
+
+  clearRefreshToken = async (_id: string) => {
+    return await this.userModel.updateOne({ _id: _id }, { refreshToken: '' });
   };
 }
