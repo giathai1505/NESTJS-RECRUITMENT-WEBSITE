@@ -19,8 +19,8 @@ async function bootstrap() {
   const port = configService.get<string>('PORT');
 
   //config view engine
-  app.useStaticAssets(join(__dirname, '..', 'src/public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'src/views'));
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  // app.setBaseViewsDir(join(__dirname, '..', 'src/views'));
   app.setViewEngine('ejs');
   app.useGlobalPipes(new ValidationPipe());
 

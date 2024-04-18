@@ -21,7 +21,8 @@ export class FilesController {
     @UploadedFile(
       new ParseFilePipeBuilder()
         .addFileTypeValidator({
-          fileType: 'png',
+          //got error when using extionsion, need to add mimetype
+          fileType: /^(jpg|jpeg|image\/jpeg|png|image\/png|txt|txt\/plain)$/i,
         })
         .addMaxSizeValidator({
           maxSize: 1000000,

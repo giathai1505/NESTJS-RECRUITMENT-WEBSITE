@@ -22,6 +22,7 @@ export class MulterConfigService implements MulterOptionsFactory {
         return;
       }
       //TO-DO: handle when create image error
+      console.log('=======');
       console.log('Create folder error: ', error);
     });
   };
