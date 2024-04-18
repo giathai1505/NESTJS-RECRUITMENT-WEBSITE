@@ -30,7 +30,7 @@ export class JobsController {
 
   @Get()
   @Public()
-  @ResponseMessage('Get list job successfully!')
+  @ResponseMessage('Fetch jobs successfully!')
   findAll(
     @Query('current') current: string,
     @Query('pageSize') pageSize: string,
@@ -41,7 +41,7 @@ export class JobsController {
 
   @Public()
   @Get(':id')
-  @ResponseMessage('Get detail job successfully!')
+  @ResponseMessage('Fetch job successfully!')
   findOne(@Param('id') id: string) {
     return this.jobsService.findOne(id);
   }

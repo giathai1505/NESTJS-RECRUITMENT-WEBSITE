@@ -11,7 +11,11 @@ import {
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { ResponseMessage, User } from '@/decorators/customizeDecorators';
+import {
+  Public,
+  ResponseMessage,
+  User,
+} from '@/decorators/customizeDecorators';
 import { IUser } from '@/users/user.interface';
 
 @Controller('companies')
@@ -19,11 +23,13 @@ export class CompaniesController {
   constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  @ResponseMessage('Create company successfully!')
   create(@Body() createCompanyDto: CreateCompanyDto, @User() user: IUser) {
     return this.companiesService.create(createCompanyDto, user);
   }
 
   @Patch(':id')
+  @ResponseMessage('Update company successfully!')
   update(
     @Param('id') id: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
@@ -33,12 +39,14 @@ export class CompaniesController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Delete company successfully!')
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.companiesService.remove(id, user);
   }
 
   @Get()
-  @ResponseMessage('Fetch companies successfully!!')
+  @Public()
+  @ResponseMessage('Fetch companies successfully!')
   findAll(
     @Query('limit') limit: string,
     @Query('current') current: string,
@@ -47,9 +55,9 @@ export class CompaniesController {
     return this.companiesService.findAll(+limit, +current, qs);
   }
 
-  //====== Done
-
   @Get(':id')
+  @Public()
+  @ResponseMessage('Fetch company successfully!')
   findOne(@Param('id') id: string) {
     return this.companiesService.findOne(+id);
   }
