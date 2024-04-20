@@ -8,6 +8,7 @@ import { createUserDto } from './dto/create-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { IUser } from './user.interface';
 import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 
 @Injectable()
 export class UsersService {
@@ -65,7 +66,15 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    return await this.userModel.findOne({ _id: id }).select('-password');
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Id is not valid!');
+    }
+    return await this.userModel
+      .findOne({ _id: id })
+      .select('-password')
+      .populate([
+        { path: 'role', select: { _id: 1, name: 1, permissions: 1 } },
+      ]);
   }
 
   async findAll(limit: number, current: number, qs: string) {
@@ -105,6 +114,15 @@ export class UsersService {
   }
 
   async remove(id: string, user: IUser): Promise<any> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Id is not valid!');
+    }
+
+    const curentUser = await this.userModel.findOne({ _id: id });
+    if (curentUser && curentUser.email === 'admin@gmail.con') {
+      throw new BadRequestException('Can not delete admin account!');
+    }
+
     await this.userModel.updateOne(
       { _id: id },
       {
@@ -133,7 +151,12 @@ export class UsersService {
   }
 
   findOneByEmail(email: string) {
-    return this.userModel.findOne({ email: email });
+    return this.userModel
+      .findOne({ email: email })
+      .select('-password')
+      .populate([
+        { path: 'role', select: { _id: 1, name: 1, permissions: 1 } },
+      ]);
   }
 
   isValidPassword(password: string, hash: string) {
@@ -147,10 +170,18 @@ export class UsersService {
   };
 
   findUserByRefreshToken = async (refreshToken: string) => {
-    return await this.userModel.findOne({ refreshToken });
+    return await this.userModel
+      .findOne({ refreshToken })
+      .select('-password')
+      .populate([
+        { path: 'role', select: { _id: 1, name: 1, permissions: 1 } },
+      ]);
   };
 
   clearRefreshToken = async (_id: string) => {
+    if (!mongoose.Types.ObjectId.isValid(_id)) {
+      throw new BadRequestException('Id is not valid!');
+    }
     return await this.userModel.updateOne({ _id: _id }, { refreshToken: '' });
   };
 }

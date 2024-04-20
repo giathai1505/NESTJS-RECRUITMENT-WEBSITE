@@ -98,6 +98,12 @@ export class RolesService {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('Id is not valid!');
     }
+
+    const actionRole = await this.roleModel.findOne({ _id: id });
+    if (actionRole && actionRole.name === 'ADMIN') {
+      throw new BadRequestException('Can not delete admin role!');
+    }
+
     await this.roleModel.updateOne(
       { _id: id },
       {

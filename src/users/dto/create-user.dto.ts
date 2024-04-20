@@ -5,6 +5,7 @@ import {
   IsNotEmptyObject,
   IsObject,
   ValidateNested,
+  IsMongoId,
 } from 'class-validator';
 import mongoose from 'mongoose';
 
@@ -37,7 +38,8 @@ export class createUserDto {
   address: string;
 
   @IsNotEmpty()
-  role: string;
+  @IsMongoId()
+  role: mongoose.Schema.Types.ObjectId;
 
   @IsNotEmptyObject()
   @IsObject()
